@@ -5,6 +5,7 @@
 	(uuid "f48a671c-1542-4fb2-ac88-d921c6d4416a")
 	(paper "A3")
 	(title_block
+		(rev "v0.1")
 		(company "Marine Circuits")
 	)
 	(lib_symbols)
