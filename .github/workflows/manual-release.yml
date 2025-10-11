@@ -1,12 +1,11 @@
 name: Publish
 run-name: Publish ${{ github.head_ref }}
 on:
-  workflow_call:
+  workflow_dispatch:
 jobs:
   publish:
     name: "Release new version"
     runs-on: ubuntu-22.04
-    environment: Stable
     permissions:
       contents: write
     steps:
