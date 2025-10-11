@@ -1,3 +1,15 @@
+## 0.2.0 (2025-10-11)
+
+### Feat
+
+- add digikey order BOM
+- add dummy schematics + pcb
+
+### Fix
+
+- build also on push to master
+- ignore ERC issue
+
 ## 0.1.0 (2025-10-05)
 
 ### Feat
