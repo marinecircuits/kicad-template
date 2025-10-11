@@ -5,6 +5,8 @@ import re
 def get_new_revision() -> str:
     # get git commit descrpition
     commit_desc = os.popen("git describe --tags --abbrev=4").read().strip()
+    if re.fullmatch(r'\d+\.\d+\.\d+', commit_desc):
+        return commit_desc.split('.')[0]
     return commit_desc
 
 
