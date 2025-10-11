@@ -1,3 +1,14 @@
+## 0.3.0 (2025-10-11)
+
+### Feat
+
+- use only major version if released
+- add version to PCB from latest tag
+
+### Fix
+
+- execute version update also in release script
+
 ## 0.2.0 (2025-10-11)
 
 ### Feat
