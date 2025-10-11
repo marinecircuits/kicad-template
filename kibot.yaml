@@ -104,6 +104,26 @@ outputs:
     format: XLSX
     group_fields: *id001
     count_smd_tht: true
+- name: marinecircuits_bom_digikey_csv
+  comment: Marine Circuits Bill of Materials in CSV format with Digi-Key part numbers
+  type: bom
+  dir: BOM/MarineCircuits
+  options:
+    output: 'bom_mc_digikey_%f_%r.csv'
+    format: CSV
+    columns:
+      - field: 'Reference'
+        name: 'Reference'
+      - field: 'Quantity Per PCB'
+        name: 'Quantity'
+      - field: 'Value'
+      - field: 'Footprint'
+      - field: 'Manufacturer'
+      - field: 'MPN'
+      - field: 'Digi-Key_PN'
+    csv:
+      hide_pcb_info: true
+      hide_stats_info: true
 - name: positional_bom_html
   comment: Positional Bill of Materials in HTML format
   type: bom
