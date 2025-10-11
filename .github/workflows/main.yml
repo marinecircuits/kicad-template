@@ -15,3 +15,9 @@ jobs:
   kibot:
     uses: ./.github/workflows/kibot.yml
     secrets: inherit
+  publish-stable:
+    name: "Release Stable"
+    permissions:
+      contents: write
+    uses: ./.github/workflows/module-publish-stable.yml
+    secrets: inherit

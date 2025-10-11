@@ -1,0 +1,23 @@
+name: Publish
+run-name: Publish ${{ github.head_ref }}
+on:
+  workflow_call:
+jobs:
+  publish:
+    name: "Release new version"
+    runs-on: ubuntu-22.04
+    environment: Stable
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+    - id: cz
+      name: Bump version and push to branch
+      uses: commitizen-tools/commitizen-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
