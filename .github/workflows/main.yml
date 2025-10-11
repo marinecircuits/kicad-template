@@ -1,0 +1,14 @@
+name: PCB things
+on:
+  pull_request:
+    paths:
+      - '*.kicad_sch'
+      - '*.kicad_pcb'
+      - '.github/workflows/*.yml'
+    branches:
+      - main
+
+jobs:
+  kibot:
+    uses: ./.github/workflows/kibot.yml
+    secrets: inherit
