@@ -20,7 +20,4 @@ jobs:
       uses: commitizen-tools/commitizen-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        push: false
-    - name: push
-      run: |
-        git push origin main --follow-tags --force
+        push: true
