@@ -943,7 +943,7 @@
 		(layer "Edge.Cuts")
 		(uuid "2cfeb60a-0327-4bae-b82e-40a344164a32")
 	)
-	(gr_text "PCB Version: ${REVISION}"
+	(gr_text "PCB Version: v${REVISION}"
 		(at 141.75 71.25 0)
 		(layer "F.SilkS")
 		(uuid "87414bb8-7752-4383-87ba-df5edd843d29")

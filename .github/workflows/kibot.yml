@@ -14,6 +14,8 @@ jobs:
       with:
         # So we can run a diff between last 2 changes
         fetch-depth: '0'
+    - name: Update PCB version
+      run: python3 update-version.py
 
     - name: get git description
       id: git_desc
