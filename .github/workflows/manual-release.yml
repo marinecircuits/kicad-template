@@ -22,3 +22,7 @@ jobs:
       with:
         github_token: ${{ secrets.RELEASE_PUSH_TOKEN }}
         push: true
+
+  kibot:
+    uses: ./.github/workflows/kibot.yml
+    secrets: inherit
