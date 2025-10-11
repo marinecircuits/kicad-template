@@ -8,7 +8,7 @@
 	)
 	(paper "A4")
 	(title_block
-		(rev "0.2.0-4-g7b1a")
+		(rev "0.3.0-4-g86ce")
 	)
 	(layers
 		(0 "F.Cu" signal)

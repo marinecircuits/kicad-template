@@ -1,3 +1,9 @@
+## 0.4.0 (2025-10-11)
+
+### Feat
+
+- update version in schematics from git
+
 ## 0.3.0 (2025-10-11)
 
 ### Feat
