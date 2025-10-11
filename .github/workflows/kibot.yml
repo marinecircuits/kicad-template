@@ -48,3 +48,8 @@ jobs:
       with:
         name: ${{ github.event.repository.name }}-${{ env.GIT_DESC }}-schematics
         path: out/Schematic/*schematic.pdf
+    - name: Upload DigiKey BOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-${{ env.GIT_DESC }}-marinecircuits-bom-digikey
+        path: out/BOM/MarineCircuits/*.csv
