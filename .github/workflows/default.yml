@@ -1,0 +1,15 @@
+name: Merge to main workflow
+run-name: ${{ github.actor }} merged to main
+
+on:
+    pull_request:
+        types: [closed]
+        branches: [main]
+
+jobs:
+    kibot:
+        if: >
+          github.event.pull_request.merged == true &&
+          !startsWith(github.event.pull_request.title, 'Release v')
+        uses: ./.github/workflows/module-kibot.yml
+        secrets: inherit

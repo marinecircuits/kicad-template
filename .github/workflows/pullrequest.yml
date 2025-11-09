@@ -1,0 +1,10 @@
+name: Default CI flow
+run-name: ${{ github.actor }} triggered default workflow on ${{ github.head_ref }}
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  kibot:
+    uses: ./.github/workflows/module-kibot.yml
+    secrets: inherit
