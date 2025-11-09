@@ -5,8 +5,10 @@
 	(uuid "f48a671c-1542-4fb2-ac88-d921c6d4416a")
 	(paper "A3")
 	(title_block
+		(date "2025-11-09")
 		(rev "0.3.0-4-g86ce")
 		(company "Marine Circuits")
+		(comment 9 "githash")
 	)
 	(lib_symbols
 		(symbol "2s_Resistor_0805:47k_0805"
