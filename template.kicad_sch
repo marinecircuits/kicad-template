@@ -6,9 +6,9 @@
 	(paper "A3")
 	(title_block
 		(date "2025-11-09")
-		(rev "0.3.0-4-g86ce")
+		(rev "0.5.0")
 		(company "Marine Circuits")
-		(comment 9 "githash")
+		(comment 9 "9718960")
 	)
 	(lib_symbols
 		(symbol "2s_Resistor_0805:47k_0805"

@@ -9,8 +9,8 @@
 	(paper "A4")
 	(title_block
 		(date "2025-11-09")
-		(rev "0.3.0-4-g86ce")
-		(comment 9 "githash")
+		(rev "0.5.0")
+		(comment 9 "9718960")
 	)
 	(layers
 		(0 "F.Cu" signal)

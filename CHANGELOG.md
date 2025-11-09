@@ -1,3 +1,9 @@
+## 0.5.0 (2025-11-09)
+
+### Feat
+
+- add release workflow + add new text on PCB
+
 ## 0.4.0 (2025-10-11)
 
 ### Feat
