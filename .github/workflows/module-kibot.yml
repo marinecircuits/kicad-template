@@ -1,0 +1,43 @@
+name: "KiBot Run"
+on:
+  workflow_dispatch:
+  workflow_call:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  quick:
+    runs-on: ubuntu-latest
+    container: ghcr.io/inti-cmnb/kicad9_auto_full:latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # So we can run a diff between last 2 changes
+          fetch-depth: "0"
+      - name: get git description
+        id: git_desc
+        run: echo "GIT_DESC=$(git describe --tags --always)" >> $GITHUB_ENV
+
+      - name: Generate Fabrication files
+        run: |
+          kibot -c kibot.yaml --out-dir out
+      - name: List Generated files
+        run: |
+          ls -al
+
+      - name: Retrieve results
+        uses: actions/upload-artifact@v4
+        with:
+          # get name of the repository and use it for the artifact name
+          name: ${{ github.event.repository.name }}-${{ env.GIT_DESC }}-full
+          path: out/*
+      - name: Upload Schematics alone
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.GIT_DESC }}-schematics
+          path: out/Schematic/*schematic.pdf
+      - name: Upload DigiKey BOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.GIT_DESC }}-marinecircuits-bom-digikey
+          path: out/BOM/MarineCircuits/*.csv

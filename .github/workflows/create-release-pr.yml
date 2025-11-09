@@ -1,0 +1,77 @@
+# .github/workflows/create-release-pr.yml
+name: Create Release PR
+
+on:
+  workflow_dispatch:   # run manually, or change to push / schedule
+
+jobs:
+  pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # push branch
+      pull-requests: write     # create PR
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Install Commitizen
+        run: pip install --upgrade commitizen
+
+      - name: Bump version (no tag)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cz bump --yes --changelog --no-verify
+
+      - name: Update date in Schematics and PCB files
+        run: |
+          DATE=$(date +"%Y-%m-%d")
+          ESCAPED=$(printf '%s\n' "$DATE" | sed 's/[&/\]/\\&/g')
+          find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
+            echo "Updating date in $file"
+            # In-place replace with backup (removed after)
+            sed -i.bak "s/(date \"[^\"]*\")/(date \"$ESCAPED\")/g" "$file" && rm "$file.bak"
+          done
+
+      - name: Update version in .kicad_pcb and .kicad_sch file
+        run: |
+          # 1. Get the new version (e.g. 1.2.3)
+          NEW_VER=$(cz version --project)
+          echo "New version: $NEW_VER"
+
+          # 2. Escape dots for sed (v1.2.3 → v1\.2\.3)
+          ESCAPED=$(printf '%s\n' "$NEW_VER" | sed 's/[.]/\\./g')
+
+          # 3. Find all .kicad_pcb and .kicad_sch files and replace (rev "vOLD") → (rev "vNEW")
+          find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
+            echo "Updating $file"
+            # In-place replace with backup (removed after)
+            sed -i.bak "s/(rev \"v[^\"]*\")/(rev \"v$ESCAPED\")/g" "$file" && rm "$file.bak"
+          done
+
+          # 4. Stage changed files
+          git add -A
+
+          # 5. Amend the bump commit (or create new if none)
+          git commit --amend --no-edit || git commit -m "chore: update rev in .kicad_pcb/.kicad_sch to v$NEW_VER"
+
+      - name: Push release branch
+        id: branch
+        run: |
+          VERSION=$(cz version --project)
+          BRANCH=release/v$VERSION
+          git checkout -b "$BRANCH"
+          git add .
+          git commit -m "chore: release $VERSION" || echo "nothing to commit"
+          git push origin "$BRANCH" --force
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "Release v${{ steps.branch.outputs.version }}" \
+            --body "Automated release PR – merge to create tag." \
+            --base main \
+            --head ${{ steps.branch.outputs.branch }}

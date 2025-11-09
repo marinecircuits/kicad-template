@@ -1,0 +1,117 @@
+# .github/workflows/tag-release-merge.yml
+name: Tag Release on Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  # -------------------------------------------------
+  # 1. Tag the merge commit
+  # -------------------------------------------------
+  tag:
+    if: >
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'Release v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from PR title
+        id: version
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          VERSION=$(echo "$TITLE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="${{ steps.version.outputs.version }}"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+  # -------------------------------------------------
+  # 2. Run Kibot
+  # -------------------------------------------------
+  kibot:
+    needs: tag
+    uses: ./.github/workflows/module-kibot.yml
+    secrets: inherit
+
+  # -------------------------------------------------
+  # 3. Publish Release + Upload ZIP (no dist/ folder)
+  # -------------------------------------------------
+  publish-release:
+    needs: [kibot, tag]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from tag
+        id: git_desc
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          VERSION=${TAG#v}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Install Commitizen
+        run: pip install --upgrade commitizen
+
+      # Generate incremental changelog for release notes
+      - name: Generate changelog
+        id: changelog
+        run: |
+          cz changelog --incremental > CHANGELOG.md
+          {
+            echo "body<<EOF"
+            cat CHANGELOG.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.tag }}-full
+          path: dist/
+
+      - name: Zip contents of dist/ (no dist folder)
+        run: |
+          VERSION="${{ steps.git_desc.outputs.version }}"
+          ZIP_NAME="release-v$VERSION.zip"
+          (cd dist && zip -r "../$ZIP_NAME" .)
+          mkdir -p upload/
+          mv "$ZIP_NAME" upload/
+
+      - name: Create GitHub Release
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${{ steps.changelog.outputs.body }}" > release_notes.md
+          gh release create "${{ steps.git_desc.outputs.tag }}" \
+            --title "Release ${{ steps.git_desc.outputs.tag }}" \
+            --notes-file release_notes.md \
+            --verify-tag
+
+      - name: Upload release ZIP
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload \
+            "${{ steps.git_desc.outputs.tag }}" \
+            "./upload/release-v${{ steps.git_desc.outputs.version }}.zip" \
+            --clobber
