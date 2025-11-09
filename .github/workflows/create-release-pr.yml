@@ -29,8 +29,24 @@ jobs:
           ESCAPED=$(printf '%s\n' "$DATE" | sed 's/[&/\]/\\&/g')
           find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
             echo "Updating date in $file"
-            # In-place replace with backup (removed after)
-            sed -i.bak "s/(date \"[^\"]*\")/(date \"$ESCAPED\")/g" "$file" && rm "$file.bak"
+            # In-place replace
+            sed -i "s/(date \"[^\"]*\")/(date \"$ESCAPED\")/g" "$file"
+          done
+
+      - name: Update comment 9 with git commit hash
+        run: |
+          # 1. Get the current short Git commit hash
+          GIT_HASH=$(git rev-parse --short HEAD)
+          echo "Git hash: $GIT_HASH"
+
+          # 2. Escape for sed (just in case)
+          ESCAPED=$(printf '%s\n' "$GIT_HASH" | sed 's/[&/\]/\\&/g')
+
+          # 3. Find all .kicad_pcb and .kicad_sch files and replace (comment 9 "old") → (comment 9 "new")
+          find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
+            echo "Updating comment 9 in $file"
+            # In-place replace
+            sed -i "s/(comment 9 \"[^\"]*\")/(comment 9 \"$ESCAPED\")/g" "$file"
           done
 
       - name: Update version in .kicad_pcb and .kicad_sch file
@@ -45,8 +61,8 @@ jobs:
           # 3. Find all .kicad_pcb and .kicad_sch files and replace (rev "vOLD") → (rev "vNEW")
           find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
             echo "Updating $file"
-            # In-place replace with backup (removed after)
-            sed -i.bak "s/(rev \"v[^\"]*\")/(rev \"v$ESCAPED\")/g" "$file" && rm "$file.bak"
+            # In-place replace
+            sed -i "s/(rev \"[^\"]*\")/(rev \"$ESCAPED\")/g" "$file"
           done
 
           # 4. Stage changed files
