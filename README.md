@@ -6,6 +6,9 @@
 - install pre-commit hook `pre-commit install --hook-type commit-msg`
 - reset version in `.cz.json` to `0.0.1`
 
+# Copy content of repository into yours
+`curl -L https://github.com/user/repo/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
+
 
 # Variables
 These variables are relevant for this template / workflow:
