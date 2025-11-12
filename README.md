@@ -12,6 +12,7 @@ These variables are relevant for this template / workflow:
 - `${ISSUE_DATE}`: the release PR workflow will update this with the current date, in the `YYYY-MM-DD` format (the only date format you should ever use by the way). It is committed and added in the PR as a change
 - `${REVISION}`: the release PR will update this with the git tag (not 100% true, the git tag will be only created one the PR is merged into main, but the result is the same). It is committed and added in the PR as a change. This field will have `+!` appended if it's not a released version.
 - `${COMMENT9}`: before kibot is invoked on github, this variable is updated with the short git hash from `git rev-parse --short HEAD`. It is committed and added in the PR as a change
+- `${COMMENT8}`: This contains the project name. It is not updated automatically, you should set it once at the beginning of the project.
 
 
 # Versioning
