@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   quick:
     runs-on: ubuntu-latest
@@ -12,29 +11,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # So we can run a diff between last 2 changes
           fetch-depth: "0"
-      - name: get git description
-        shell: bash
-        id: git_desc
-        run: |
-          GIT_DESC=$(git describe --tags --always)
-          echo "desc=$GIT_DESC" >> $GITHUB_OUTPUT
 
-      - name: Get Git description
+      - name: Get full Git description
+        id: git_desc
+        shell: bash
+        run: |
+          if git describe --tags --always >/dev/null 2>&1; then
+            GIT_DESC=$(git describe --tags --always)
+          else
+            GIT_DESC="untagged-$(git rev-parse --short HEAD)"
+          fi
+          echo "desc=$GIT_DESC" >> $GITHUB_OUTPUT
+          echo "Git description: $GIT_DESC"
+
+      - name: Get short Git description (safe)
         id: git_desc_short
         shell: bash
         run: |
-          # Try to get a tag description (without extra metadata)
           if git describe --tags --exact-match >/dev/null 2>&1; then
             GIT_DESC_SHORT=$(git describe --tags --exact-match)
-          else
-            # Not on a tag → use nearest tag + "+!"
+          elif git describe --tags --abbrev=0 >/dev/null 2>&1; then
             BASE=$(git describe --tags --abbrev=0)
             GIT_DESC_SHORT="${BASE}+!"
+          else
+            # No tags at all — fallback to commit hash
+            GIT_DESC_SHORT="v0.0.0+$(git rev-parse --short HEAD)"
           fi
-
-          echo "Git description: $GIT_DESC_SHORT"
+          echo "Git description (short): $GIT_DESC_SHORT"
           echo "desc=$GIT_DESC_SHORT" >> $GITHUB_OUTPUT
 
       - name: Update date in Schematics and PCB files
@@ -44,63 +48,53 @@ jobs:
           ESCAPED=$(printf '%s\n' "$DATE" | sed 's/[&/\]/\\&/g')
           find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d'' file; do
             echo "Updating date in $file"
-            # In-place replace
             sed -i "s/(date \"[^\"]*\")/(date \"$ESCAPED\")/g" "$file"
           done
 
       - name: Update comment 9 with git commit hash
         shell: bash
         run: |
-          # 1. Get the current short Git commit hash
           GIT_HASH=$(git rev-parse --short HEAD)
           echo "Git hash: $GIT_HASH"
-
-          # 2. Escape for sed (just in case)
           ESCAPED=$(printf '%s\n' "$GIT_HASH" | sed 's/[&/\]/\\&/g')
-
-          # 3. Find all .kicad_pcb and .kicad_sch files and replace (comment 9 "old") → (comment 9 "new")
           find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
             echo "Updating comment 9 in $file"
-            # In-place replace
             sed -i "s/(comment 9 \"[^\"]*\")/(comment 9 \"$ESCAPED\")/g" "$file"
           done
 
-      - name: Update version in .kicad_pcb and .kicad_sch file
+      - name: Update version in KiCad files
         shell: bash
         run: |
-          # 1. Get the version from git describe
           NEW_VER=${{ steps.git_desc_short.outputs.desc }}
           echo "New version: $NEW_VER"
-
-          # 2. Escape dots for sed (v1.2.3 → v1\.2\.3)
           ESCAPED=$(printf '%s\n' "$NEW_VER" | sed 's/[.]/\\./g')
-
-          # 3. Find all .kicad_pcb and .kicad_sch files and replace (rev "vOLD") → (rev "vNEW")
           find . -type f \( -name "*.kicad_pcb" -o -name "*.kicad_sch" \) -print0 | while IFS= read -r -d '' file; do
-            echo "Updating $file"
-            # In-place replace
+            echo "Updating version in $file"
             sed -i "s/(rev \"[^\"]*\")/(rev \"$ESCAPED\")/g" "$file"
           done
 
       - name: Generate Fabrication files
         run: |
           kibot -c kibot.yaml --out-dir out
-      - name: List Generated files
-        run: |
-          ls -al
 
-      - name: Retrieve results
+      - name: List Generated files
+        run: ls -al out || echo "No output directory found."
+
+      - name: Upload all results
         uses: actions/upload-artifact@v4
         with:
-          # get name of the repository and use it for the artifact name
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-full
           path: out/*
-      - name: Upload Schematics alone
+
+      - name: Upload Schematics
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-schematics
           path: out/Schematic/*schematic.pdf
+
       - name: Upload DigiKey BOM
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-marinecircuits-bom-digikey
