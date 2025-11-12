@@ -7,7 +7,7 @@
 - reset version in `.cz.json` to `0.0.1`
 
 # Copy content of repository into yours
-`curl -L https://github.com/user/repo/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
+`curl -L https://github.com/marinecircuits/kicad-template/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
 
 
 # Variables
