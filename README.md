@@ -4,6 +4,7 @@
 - setup python environment `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - execute setup script
   - `python3 scripts/setup_template.py`
+- init git repository (if not already done) and add all files `git init . && git add .`
 - install pre-commit hook `pre-commit install --hook-type commit-msg`
 
 
