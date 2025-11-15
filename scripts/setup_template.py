@@ -1,14 +1,14 @@
 import os
 import re
 import sys
-
+import json
 
 def sanitize_project_name(name):
     """Sanitize project name to contain only A-Z, a-z, 0-9, _ and -."""
-    sanitized = re.sub(r"[^A-Za-z0-9_-]+", "_", name)  # replace invalid chars
-    sanitized = re.sub(r"__+", "_", sanitized)  # collapse multiple underscores
-    sanitized = sanitized.strip("_-")  # remove leading/trailing _ or -
-    sanitized = sanitized.lower()  # convert to lowercase
+    sanitized = re.sub(r"[^A-Za-z0-9_-]+", "_", name)
+    sanitized = re.sub(r"__+", "_", sanitized)
+    sanitized = sanitized.strip("_-")
+    sanitized = sanitized.lower()
     if not sanitized:
         raise ValueError("Project name cannot be empty after sanitization.")
     if sanitized != name:
@@ -25,9 +25,10 @@ def update_kicad_comment(file_path, project_name):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Replace the comment 8 line
     new_content, count = re.subn(
-        r'\(comment 8\s+".*?"\)', f'(comment 8 "{project_name}")', content
+        r'\(comment 8\s+".*?"\)',
+        f'(comment 8 "{project_name}")',
+        content
     )
 
     if count > 0:
