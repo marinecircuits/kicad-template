@@ -87,17 +87,12 @@ def setup_template(project_name):
 if __name__ == "__main__":
     script_name = os.path.basename(sys.argv[0])
 
-    if len(sys.argv) != 2:
-        print(f"Usage: python {script_name} <project_name>")
-        print()
-        print("Sets up a new KiCad project from a template by:")
-        print("  - Renaming template.kicad_* files to <project_name>")
-        print("  - Updating (comment 8 ...) fields to match <project_name>")
-        print("  - Removing CHANGELOG.md")
-        print("  - Resetting version in .cz.toml to 0.0.1")
-        sys.exit(1)
+    if len(sys.argv) == 2:
+        project_name = sys.argv[1]
+    else:
+        # Ask the user for input
+        project_name = input("Enter the project name: ").strip()
 
-    project_name = sys.argv[1]
     try:
         setup_template(project_name)
     except ValueError as e:
