@@ -1,13 +1,12 @@
-# Readme
-- copy content of this repository to your project
+# Usage
+- Copy content of repository
+  - `curl -L https://github.com/marinecircuits/kicad-template/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
 - setup python environment `python3 -m venv .venv`
 - activate it `source .venv/bin/activate`
 - install dependencies `pip install -r requirements.txt`
+- execute setup script
+  - `python3 scripts/setup_template.py`
 - install pre-commit hook `pre-commit install --hook-type commit-msg`
-- reset version in `.cz.json` to `0.0.1`
-
-# Copy content of repository into yours
-`curl -L https://github.com/marinecircuits/kicad-template/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
 
 
 # Variables
