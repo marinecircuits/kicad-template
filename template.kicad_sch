@@ -9,6 +9,7 @@
 		(rev "0.5.0")
 		(company "Marine Circuits")
 		(comment 9 "9718960")
+		(comment 8 "KiCad Template")
 	)
 	(lib_symbols
 		(symbol "2s_Resistor_0805:47k_0805"
