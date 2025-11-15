@@ -67,31 +67,26 @@ def setup_template(project_name):
     else:
         print(f"Skipped (not found): {changelog_path}")
 
-    # 4. Update version in .cz.toml
-    cz_path = ".cz.toml"
+    # 4. Update version in .cz.json
+    cz_path = ".cz.json"
     if os.path.exists(cz_path):
         with open(cz_path, "r", encoding="utf-8") as f:
-            content = f.read()
+            data = json.load(f)
 
-        # Replace version value in a TOML key like: version = "x.y.z"
-        new_content = re.sub(
-            r'version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"', 'version = "0.0.1"', content
-        )
+        data["version"] = "0.0.1"
 
         with open(cz_path, "w", encoding="utf-8") as f:
-            f.write(new_content)
+            json.dump(data, f, indent=2)
+
         print(f"Updated version in {cz_path} to 0.0.1")
     else:
         print(f"Skipped (not found): {cz_path}")
 
 
 if __name__ == "__main__":
-    script_name = os.path.basename(sys.argv[0])
-
     if len(sys.argv) == 2:
         project_name = sys.argv[1]
     else:
-        # Ask the user for input
         project_name = input("Enter the project name: ").strip()
 
     try:
