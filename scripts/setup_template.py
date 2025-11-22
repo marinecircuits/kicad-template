@@ -73,7 +73,7 @@ def setup_template(project_name):
         with open(cz_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        data["version"] = "0.0.1"
+        data["commitizen"]["version"] = "0.0.1"
 
         with open(cz_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
