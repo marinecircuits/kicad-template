@@ -1,4 +1,6 @@
 # Usage
+- Create new project directory
+-   `mkdir new-prorject && cd new-project`
 - Copy content of repository
   - `curl -L https://github.com/marinecircuits/kicad-template/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1`
 - setup python environment `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
