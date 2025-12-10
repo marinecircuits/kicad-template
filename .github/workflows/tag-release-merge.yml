@@ -89,12 +89,15 @@ jobs:
           path: dist/
 
       - name: Zip contents of dist/ (no dist folder)
+        id: zip
         run: |
           VERSION="${{ steps.git_desc.outputs.version }}"
-          ZIP_NAME="release-v$VERSION.zip"
+          REPO_NAME="${{ github.event.repository.name }}"
+          ZIP_NAME="${REPO_NAME}-v${VERSION}.zip"
           (cd dist && zip -r "../$ZIP_NAME" .)
           mkdir -p upload/
           mv "$ZIP_NAME" upload/
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         id: create_release
@@ -113,5 +116,5 @@ jobs:
         run: |
           gh release upload \
             "${{ steps.git_desc.outputs.tag }}" \
-            "./upload/release-v${{ steps.git_desc.outputs.version }}.zip" \
+            "./upload/${{ steps.zip.outputs.zip_name }}" \
             --clobber
