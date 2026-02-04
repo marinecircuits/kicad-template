@@ -21,7 +21,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          cz bump --yes --changelog --no-verify
+          cz bump --yes --no-verify
 
       - name: Update date in Schematics and PCB files
         run: |
