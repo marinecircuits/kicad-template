@@ -93,7 +93,7 @@ jobs:
         run: |
           VERSION="${{ steps.git_desc.outputs.version }}"
           REPO_NAME="${{ github.event.repository.name }}"
-          ZIP_NAME="${REPO_NAME}-v${VERSION}.zip"
+          ZIP_NAME="${REPO_NAME}-${VERSION}.zip"
           (cd dist && zip -r "../$ZIP_NAME" .)
           mkdir -p upload/
           mv "$ZIP_NAME" upload/
