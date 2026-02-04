@@ -36,7 +36,7 @@ jobs:
             GIT_DESC_SHORT="${BASE}+!"
           else
             # No tags at all — fallback to commit hash
-            GIT_DESC_SHORT="v0.0.0+$(git rev-parse --short HEAD)"
+            GIT_DESC_SHORT="0.0.0+$(git rev-parse --short HEAD)"
           fi
           echo "Git description (short): $GIT_DESC_SHORT"
           echo "desc=$GIT_DESC_SHORT" >> $GITHUB_OUTPUT
