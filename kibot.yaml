@@ -203,14 +203,18 @@ outputs:
   comment: 3D model in STEP format
   type: export_3d
   dir: 3D
+  run_by_default: false
   options:
     format: step
+    ignore_missing: true
 - name: basic_export_3d_stl
   comment: 3D model in STL format
   type: export_3d
   dir: 3D
+  run_by_default: false
   options:
     format: stl
+    ignore_missing: true
 - name: basic_gerb_drill
   comment: Drill files in GERB_DRILL format
   type: gerb_drill
