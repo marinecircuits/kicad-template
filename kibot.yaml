@@ -46,7 +46,7 @@ outputs:
 - name: generic_bom_html
   comment: Generic Bill of Materials in HTML format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: HTML
     group_fields: &id001
@@ -64,7 +64,7 @@ outputs:
 - name: generic_bom_csv
   comment: Generic Bill of Materials in CSV format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: CSV
     group_fields: *id001
@@ -72,7 +72,7 @@ outputs:
 - name: generic_bom_hrtxt
   comment: Generic Bill of Materials in HRTXT format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: HRTXT
     hrtxt:
@@ -82,7 +82,7 @@ outputs:
 - name: generic_bom_tsv
   comment: Generic Bill of Materials in TSV format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: TSV
     group_fields: *id001
@@ -90,7 +90,7 @@ outputs:
 - name: generic_bom_xml
   comment: Generic Bill of Materials in XML format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: XML
     group_fields: *id001
@@ -98,7 +98,7 @@ outputs:
 - name: generic_bom_xlsx
   comment: Generic Bill of Materials in XLSX format
   type: bom
-  dir: BoM/Generic
+  dir: BOM/Generic
   options:
     format: XLSX
     group_fields: *id001
@@ -126,7 +126,7 @@ outputs:
 - name: positional_bom_html
   comment: Positional Bill of Materials in HTML format
   type: bom
-  dir: BoM/Positional
+  dir: BOM/Positional
   options:
     format: HTML
     group_fields: *id001
@@ -169,7 +169,7 @@ outputs:
 - name: positional_bom_xlsx
   comment: Positional Bill of Materials in XLSX format
   type: bom
-  dir: BoM/Positional
+  dir: BOM/Positional
   options:
     format: XLSX
     group_fields: *id001
@@ -179,7 +179,7 @@ outputs:
       style: modern-red
 - name: kicad_internal_bom
   type: bom
-  dir: BoM/KiCad
+  dir: BOM/KiCad
   comment: BoM using KiCad settings
   options:
     format: KICAD
