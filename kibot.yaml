@@ -132,6 +132,7 @@ outputs:
     only_smd: true
     separate_files_for_front_and_back: true
     units: millimeters
+    dnf_filter: _kibom_dnf_Config
 - name: positional_bom_html
   comment: Positional Bill of Materials in HTML format
   type: bom
