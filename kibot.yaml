@@ -123,6 +123,15 @@ outputs:
     csv:
       hide_pcb_info: true
       hide_stats_info: true
+- name: openpnp_position
+  comment: Pick and place position files for OpenPnP - SMD populated components only, separate top/bottom
+  type: position
+  dir: Position/OpenPnP
+  options:
+    format: CSV
+    only_smd: true
+    separate_files_for_front_and_back: true
+    units: millimeters
 - name: positional_bom_html
   comment: Positional Bill of Materials in HTML format
   type: bom
