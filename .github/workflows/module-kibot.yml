@@ -9,7 +9,7 @@ jobs:
     container: ghcr.io/inti-cmnb/kicad9_auto_full:latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: "0"
 
@@ -81,21 +81,21 @@ jobs:
         run: ls -al out || echo "No output directory found."
 
       - name: Upload all results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-full
           path: out/*
 
       - name: Upload Schematics
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-schematics
           path: out/Schematic/*schematic.pdf
 
       - name: Upload DigiKey BOM
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-${{ steps.git_desc.outputs.desc }}-marinecircuits-bom-digikey
           path: out/BOM/MarineCircuits/*.csv
