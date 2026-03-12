@@ -719,17 +719,6 @@ outputs:
   options:
     template: full_SVG
     do_convert: true
-- name: basic_stencil_3d
-  comment: 3D self-registering stencil
-  type: stencil_3d
-  dir: Assembly
-- name: basic_stencil_for_jig
-  comment: Steel stencil for alignment jig
-  type: stencil_for_jig
-  dir: Assembly
-  options:
-    jigwidth: 100
-    jigheight: 100
 - name: basic_svg_sch_print
   comment: Schematic in SVG format
   type: svg_sch_print
